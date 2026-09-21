@@ -1,0 +1,236 @@
+:root {
+  --tsi-primary: #0b3d2e;
+  --tsi-primary-dark: #072a20;
+  --tsi-accent: #d4a017;
+  --tsi-bg: #f7f7f5;
+  --tsi-surface: #ffffff;
+  --tsi-border: #dcdcd6;
+  --tsi-text: #1c1c1a;
+  --tsi-muted: #6b6b64;
+  --tsi-error: #b3261e;
+  --tsi-error-bg: #fdecea;
+  --tsi-success: #1e7a3d;
+  --tsi-note-bg: #fff8e1;
+  --tsi-note-border: #e8c766;
+  --tsi-radius: 8px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--tsi-bg);
+  color: var(--tsi-text);
+  line-height: 1.45;
+}
+
+.tsi-header {
+  background: var(--tsi-primary);
+  color: white;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.tsi-header__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+.tsi-logo-placeholder {
+  background: var(--tsi-accent);
+  color: var(--tsi-primary-dark);
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 700;
+}
+
+.tsi-progress {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.tsi-main {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.tsi-footer {
+  text-align: center;
+  color: var(--tsi-muted);
+  padding: 2rem 1rem;
+  font-size: 0.85rem;
+}
+
+.tsi-card {
+  background: var(--tsi-surface);
+  border: 1px solid var(--tsi-border);
+  border-radius: var(--tsi-radius);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+h1, h2, h3 { line-height: 1.2; }
+
+label { display: block; font-weight: 600; margin-bottom: 0.25rem; }
+.tsi-help { color: var(--tsi-muted); font-size: 0.85rem; margin: 0.15rem 0 0.5rem; }
+
+input[type=text], input[type=email], input[type=tel], input[type=date],
+input[type=number], input[type=url], select, textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--tsi-border);
+  border-radius: 6px;
+  font-size: 1rem;
+  background: white;
+  margin-bottom: 0.75rem;
+}
+
+textarea { min-height: 4.5rem; resize: vertical; }
+
+.tsi-btn {
+  display: inline-block;
+  padding: 0.55rem 1.1rem;
+  border-radius: 6px;
+  border: 1px solid var(--tsi-primary);
+  background: var(--tsi-primary);
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.tsi-btn--secondary {
+  background: white;
+  color: var(--tsi-primary);
+}
+
+.tsi-btn--link {
+  background: none;
+  border: none;
+  color: var(--tsi-primary);
+  text-decoration: underline;
+  padding: 0.2rem 0;
+}
+
+.tsi-btn--danger {
+  background: white;
+  color: var(--tsi-error);
+  border-color: var(--tsi-error);
+}
+
+.tsi-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.tsi-stepper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.tsi-stepper input[type=number] { width: 5rem; margin-bottom: 0; text-align: center; }
+.tsi-stepper button { width: 2.25rem; height: 2.25rem; font-size: 1.1rem; }
+
+.tsi-yesno { display: flex; gap: 1rem; margin-bottom: 0.5rem; }
+.tsi-yesno label { font-weight: normal; display: flex; align-items: center; gap: 0.35rem; margin: 0; }
+
+.tsi-section {
+  border: 1px solid var(--tsi-border);
+  border-radius: var(--tsi-radius);
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+.tsi-section__header {
+  background: #eef1ef;
+  padding: 0.65rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+.tsi-section__body { padding: 0.75rem 1rem; }
+.tsi-section__progress { font-size: 0.85rem; color: var(--tsi-muted); }
+
+.tsi-product-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid #eee;
+}
+.tsi-product-row:last-child { border-bottom: none; }
+.tsi-product-row.tsi-unanswered { background: var(--tsi-error-bg); }
+
+.tsi-entry {
+  border: 1px solid var(--tsi-border);
+  border-radius: var(--tsi-radius);
+  padding: 0.85rem;
+  margin-bottom: 0.75rem;
+  background: #fcfcfb;
+}
+.tsi-entry__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.tsi-notes-box {
+  background: var(--tsi-note-bg);
+  border: 1px solid var(--tsi-note-border);
+  border-radius: 6px;
+  padding: 0.6rem 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.tsi-badge {
+  display: inline-block;
+  background: var(--tsi-note-bg);
+  border: 1px solid var(--tsi-note-border);
+  color: #6b5300;
+  border-radius: 999px;
+  padding: 0.1rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.tsi-flash { padding: 0.6rem 0.9rem; border-radius: 6px; margin-bottom: 0.75rem; }
+.tsi-flash--error { background: var(--tsi-error-bg); color: var(--tsi-error); }
+.tsi-flash--success { background: #e8f5e9; color: var(--tsi-success); }
+
+table.tsi-table { width: 100%; border-collapse: collapse; }
+table.tsi-table th, table.tsi-table td {
+  text-align: left; padding: 0.5rem; border-bottom: 1px solid var(--tsi-border); font-size: 0.9rem;
+}
+
+.tsi-dropzone {
+  border: 2px dashed var(--tsi-border);
+  border-radius: 6px;
+  padding: 1rem;
+  text-align: center;
+  color: var(--tsi-muted);
+  margin-bottom: 0.75rem;
+}
+.tsi-dropzone.tsi-dropzone--over { border-color: var(--tsi-accent); background: #fffdf5; }
+
+.tsi-file-list { list-style: none; padding: 0; margin: 0 0 0.5rem; font-size: 0.85rem; }
+.tsi-file-list li { display: flex; justify-content: space-between; padding: 0.2rem 0; }
+
+.tsi-holes { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.5rem; }
+.tsi-holes label { font-weight: normal; border: 1px solid var(--tsi-border); border-radius: 4px; padding: 0.15rem 0.5rem; display: flex; gap: 0.25rem; align-items: center; }
+
+@media (max-width: 600px) {
+  .tsi-main { padding: 0.75rem; }
+  .tsi-actions { flex-direction: column; }
+  .tsi-actions .tsi-btn { width: 100%; text-align: center; }
+}

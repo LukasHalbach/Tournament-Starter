@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}TSi Tournament Starter{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <header class="tsi-header">
+    <div class="tsi-header__brand">
+      <span class="tsi-logo-placeholder" aria-hidden="true">TSi</span>
+      <span>Tournament Starter</span>
+    </div>
+    {% block progress %}{% endblock %}
+  </header>
+
+  <main class="tsi-main">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="tsi-flashes">
+          {% for category, message in messages %}
+            <div class="tsi-flash tsi-flash--{{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="tsi-footer">TSi Events</footer>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}{{ submission.tournament_name }}{% endblock %}
+{% block content %}
+<p><a href="{{ url_for('admin.submission_list') }}" class="tsi-btn--link">&larr; All submissions</a></p>
+<h1>{{ submission.tournament_name }}</h1>
+<p>{{ submission.course_name }} &middot; {{ submission.start_date }} &ndash; {{ submission.end_date }} &middot; Install by {{ submission.install_deadline }}</p>
+<p>Contact: {{ submission.contact_name }} &middot; {{ submission.contact_email }} &middot; {{ submission.contact_phone }}</p>
+
+<form method="post" class="tsi-card" style="display:flex; gap:0.5rem; align-items:end;">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <input type="hidden" name="action" value="set-status">
+  <div>
+    <label for="status">Status</label>
+    <select id="status" name="status">
+      {% for s in statuses %}
+        <option value="{{ s }}" {% if submission.status == s %}selected{% endif %}>{{ s|replace('_', ' ')|title }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <button type="submit" class="tsi-btn">Update status</button>
+</form>
+
+{% if client_notes %}
+  <div class="tsi-card">
+    <h2>Client notes</h2>
+    {% for scope, text in client_notes %}
+      <div class="tsi-notes-box">
+        <span class="tsi-badge">{{ scope }}</span>
+        <p>{{ text }}</p>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+{% for section, items in by_section.items() %}
+  <div class="tsi-card">
+    <h2>{{ section }}</h2>
+    {% for item in items %}
+      <h3>{{ item.product.name }} &middot; total {{ item.total }}</h3>
+      <table class="tsi-table">
+        <tbody>
+        {% for entry in item.entries %}
+          <tr>
+            {% if item.page.layout == "count_only" %}
+              <td>Entry {{ loop.index }}</td>
+              <td>Qty: {{ entry.quantity }}</td>
+              <td>{% if entry.notes %}<span class="tsi-badge">notes</span> {{ entry.notes }}{% endif %}</td>
+            {% else %}
+              <td>{{ item.product.design_label }} {{ loop.index }}</td>
+              <td>{{ entry.type_other if entry.type_value == "Other" or not entry.type_value else entry.type_value }}</td>
+              <td>Count: {{ entry.count }}{% if entry.holes %} &middot; Holes: {{ entry.holes|join(', ') }}{% endif %}</td>
+              <td>{{ entry.description or '' }}</td>
+              <td>
+                {% for att in entry.attachments %}
+                  <a href="{{ url_for('admin.download_file', submission_id=submission.id, attachment_id=att.id) }}">{{ att.original_filename }}</a><br>
+                {% endfor %}
+                {% if entry.link_url %}<a href="{{ entry.link_url }}">link</a>{% endif %}
+              </td>
+              <td>{% if entry.notes %}<span class="tsi-badge">notes</span> {{ entry.notes }}{% endif %}</td>
+            {% endif %}
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      {% if item.note %}<div class="tsi-notes-box"><span class="tsi-badge">product notes</span> {{ item.note }}</div>{% endif %}
+    {% endfor %}
+  </div>
+{% endfor %}
+
+<div class="tsi-card">
+  <h2>Internal notes</h2>
+  {% for note in submission.admin_notes %}
+    <p><strong>{{ note.author }}</strong> &middot; {{ note.created_at.strftime('%b %d, %Y %H:%M') }}<br>{{ note.body }}</p>
+  {% endfor %}
+  <form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="action" value="add-note">
+    <textarea name="body" placeholder="Add an internal note"></textarea>
+    <button type="submit" class="tsi-btn tsi-btn--secondary">Add note</button>
+  </form>
+</div>
+{% endblock %}

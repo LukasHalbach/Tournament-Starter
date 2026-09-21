@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Admin Login{% endblock %}
+{% block content %}
+<h1>Admin Login</h1>
+<form method="post" class="tsi-card">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <label for="password">Password</label>
+  <input type="password" id="password" name="password" required autofocus>
+  <button type="submit" class="tsi-btn">Log in</button>
+</form>
+{% endblock %}

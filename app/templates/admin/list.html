@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Submissions{% endblock %}
+{% block content %}
+<div style="display:flex; justify-content:space-between; align-items:center;">
+  <h1>Submissions</h1>
+  <div>
+    <a href="{{ url_for('admin.catalog_view') }}" class="tsi-btn--link">View catalog</a>
+    &middot; <a href="{{ url_for('admin.logout') }}" class="tsi-btn--link">Log out</a>
+  </div>
+</div>
+
+<div class="tsi-card">
+  <form method="get" style="display:flex; gap:0.5rem; align-items:end;">
+    <div>
+      <label for="status">Status</label>
+      <select id="status" name="status" onchange="this.form.submit()">
+        <option value="">All</option>
+        {% for s in statuses %}
+          <option value="{{ s }}" {% if status_filter == s %}selected{% endif %}>{{ s|replace('_', ' ')|title }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </form>
+</div>
+
+<table class="tsi-table">
+  <thead>
+    <tr>
+      <th>Tournament</th><th>Course</th><th>Contact</th><th>Dates</th><th>Status</th>
+      <th>Submitted</th><th>Products</th><th>Total signs</th><th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in rows %}
+      {% set s = row.submission %}
+      <tr>
+        <td><a href="{{ url_for('admin.submission_detail', submission_id=s.id) }}">{{ s.tournament_name or '(untitled)' }}</a></td>
+        <td>{{ s.course_name }}</td>
+        <td>{{ s.contact_name }}<br>{{ s.contact_email }}</td>
+        <td>{{ s.start_date }} &ndash; {{ s.end_date }}</td>
+        <td>{{ s.status|replace('_', ' ')|title }}</td>
+        <td>{{ s.submitted_at.strftime('%b %d, %Y') if s.submitted_at else '' }}</td>
+        <td>{{ row.product_count }}</td>
+        <td>{{ row.total_signs }}</td>
+        <td>{% if row.has_notes %}<span class="tsi-badge">has notes</span>{% endif %}</td>
+      </tr>
+    {% else %}
+      <tr><td colspan="9">No submissions yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
