@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Catalog{% endblock %}
+{% block content %}
+<p><a href="{{ url_for('admin.submission_list') }}" class="tsi-btn--link">&larr; All submissions</a></p>
+<h1>Pages</h1>
+<table class="tsi-table">
+  <thead><tr><th>Order</th><th>Key</th><th>Title</th><th>Layout</th><th>Products</th></tr></thead>
+  <tbody>
+    {% for page in catalog.ordered_pages() %}
+      <tr>
+        <td>{{ page.order }}</td>
+        <td><code>{{ page.key }}</code></td>
+        <td>{{ page.title }}</td>
+        <td>{{ page.layout }}</td>
+        <td>{{ catalog.products_for_page(page.key)|map(attribute='name')|join(', ') }}</td>
+      </tr>
+    {% else %}
+      <tr><td colspan="5">No pages configured yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h1>Products</h1>
+<table class="tsi-table">
+  <thead><tr><th>Key</th><th>Name</th><th>Section</th><th>Page</th><th>Repeatable</th><th>Active</th></tr></thead>
+  <tbody>
+    {% for product in catalog.products.values() %}
+      <tr>
+        <td><code>{{ product.key }}</code></td>
+        <td>{{ product.name }}</td>
+        <td>{{ product.section }}</td>
+        <td>{{ product.page }}</td>
+        <td>{{ product.repeatable }}</td>
+        <td>{{ product.active }}</td>
+      </tr>
+    {% else %}
+      <tr><td colspan="6">No products configured yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

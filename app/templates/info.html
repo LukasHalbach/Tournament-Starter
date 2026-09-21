@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Tournament Info{% endblock %}
+{% block content %}
+<h1>Tournament Info</h1>
+<p class="tsi-help">This link saves your progress — you can close the browser and come back:
+  <br><code>{{ resume_url }}</code></p>
+
+<form method="post" class="tsi-card">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <label for="tournament_name">Tournament name</label>
+  <input type="text" id="tournament_name" name="tournament_name" value="{{ submission.tournament_name or '' }}" required>
+
+  <label for="course_name">Course name</label>
+  <input type="text" id="course_name" name="course_name" value="{{ submission.course_name or '' }}" required>
+
+  <label for="start_date">Start date</label>
+  <input type="date" id="start_date" name="start_date" value="{{ submission.start_date or '' }}">
+
+  <label for="end_date">End date</label>
+  <input type="date" id="end_date" name="end_date" value="{{ submission.end_date or '' }}">
+
+  <label for="install_deadline">Install deadline</label>
+  <input type="date" id="install_deadline" name="install_deadline" value="{{ submission.install_deadline or '' }}">
+
+  <label for="course_holes">Number of holes on the course</label>
+  <input type="number" id="course_holes" name="course_holes" min="1" max="36" value="{{ submission.course_holes or 18 }}">
+
+  <label for="contact_name">Primary contact name</label>
+  <input type="text" id="contact_name" name="contact_name" value="{{ submission.contact_name or '' }}" required>
+
+  <label for="contact_email">Primary contact email</label>
+  <input type="email" id="contact_email" name="contact_email" value="{{ submission.contact_email or '' }}" required>
+
+  <label for="contact_phone">Primary contact phone</label>
+  <input type="tel" id="contact_phone" name="contact_phone" value="{{ submission.contact_phone or '' }}">
+
+  <label for="info_notes">Notes</label>
+  <textarea id="info_notes" name="info_notes" placeholder="Anything else about the tournament itself?">{{ submission.info_notes or '' }}</textarea>
+
+  <div class="tsi-actions">
+    <span></span>
+    <button type="submit" class="tsi-btn">Next</button>
+  </div>
+</form>
+{% endblock %}

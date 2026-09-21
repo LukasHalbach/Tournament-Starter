@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Thank you{% endblock %}
+{% block content %}
+<div class="tsi-card">
+  <h1>Thanks, {{ submission.contact_name }}!</h1>
+  <p>We've received your signage request for <strong>{{ submission.tournament_name }}</strong>.</p>
+  <p>Our team will follow up at {{ submission.contact_email }} if we have any questions.</p>
+  <p class="tsi-help">Keep this link if you need to find your submission again: <br><code>{{ request.url_root }}f/{{ submission.token }}/review</code></p>
+</div>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Services{% endblock %}
+{% block progress %}
+  {% set idx = steps.index("services") + 1 %}
+  <span class="tsi-progress">Services &mdash; {{ idx }} of {{ steps|length }}</span>
+{% endblock %}
+{% block content %}
+<h1>Services</h1>
+
+<form method="post" class="tsi-card">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <input type="hidden" name="action" id="services-action" value="next">
+
+  <label>Need installation?</label>
+  <div class="tsi-yesno">
+    <label><input type="radio" name="needs_installation" value="yes" {% if submission.needs_installation == true %}checked{% endif %}> Yes</label>
+    <label><input type="radio" name="needs_installation" value="no" {% if submission.needs_installation == false %}checked{% endif %}> No</label>
+  </div>
+  <label>Installation notes</label>
+  <textarea name="installation_notes">{{ submission.installation_notes or '' }}</textarea>
+
+  <label>Need rope and stake?</label>
+  <div class="tsi-yesno">
+    <label><input type="radio" name="needs_rope_stake" value="yes" {% if submission.needs_rope_stake == true %}checked{% endif %}> Yes</label>
+    <label><input type="radio" name="needs_rope_stake" value="no" {% if submission.needs_rope_stake == false %}checked{% endif %}> No</label>
+  </div>
+  <label>Rope and stake notes</label>
+  <textarea name="rope_stake_notes">{{ submission.rope_stake_notes or '' }}</textarea>
+
+  <label>Need freight/delivery?</label>
+  <div class="tsi-yesno">
+    <label><input type="radio" name="needs_freight" value="yes" {% if submission.needs_freight == true %}checked{% endif %}> Yes</label>
+    <label><input type="radio" name="needs_freight" value="no" {% if submission.needs_freight == false %}checked{% endif %}> No</label>
+  </div>
+  <label>Delivery address</label>
+  <input type="text" name="freight_address" value="{{ submission.freight_address or '' }}">
+  <label>Freight notes</label>
+  <textarea name="freight_notes">{{ submission.freight_notes or '' }}</textarea>
+
+  <div class="tsi-actions">
+    <button type="submit" class="tsi-btn tsi-btn--secondary" onclick="document.getElementById('services-action').value='back'">Back</button>
+    <button type="submit" class="tsi-btn" onclick="document.getElementById('services-action').value='next'">Next</button>
+  </div>
+</form>
+{% endblock %}

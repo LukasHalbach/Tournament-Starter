@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+{% block title %}{{ page.title }}{% endblock %}
+
+{% block progress %}
+  {% set steps_list = steps %}
+  {% set idx = steps_list.index(page.key) + 1 %}
+  <span class="tsi-progress">{{ page.title }} &mdash; {{ idx }} of {{ steps_list|length }}</span>
+{% endblock %}
+
+{% block content %}
+<h1>{{ page.title }}</h1>
+{% if page.intro %}<p class="tsi-help">{{ page.intro }}</p>{% endif %}
+
+{% if error_messages %}
+  <div class="tsi-flash tsi-flash--error">
+    <ul style="margin:0; padding-left: 1.1rem;">
+      {% for msg in error_messages %}<li>{{ msg }}</li>{% endfor %}
+    </ul>
+  </div>
+{% endif %}
+
+<form method="post" enctype="multipart/form-data" id="page-form">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <input type="hidden" name="action" id="page-action" value="next">
+
+  {% for product in products %}
+    {% if page.layout == "count_only" %}
+      {% set raw_entries = submission.count_lines | selectattr('product_key', 'equalto', product.key) | list %}
+    {% else %}
+      {% set raw_entries = submission.designs | selectattr('product_key', 'equalto', product.key) | list %}
+    {% endif %}
+    {% set entry_list = raw_entries if raw_entries else [None] %}
+
+    <section class="tsi-card">
+      {% if products | length > 1 %}<h2>{{ product.name }}</h2>{% endif %}
+
+      {% for entry in entry_list %}
+        {% set i = loop.index0 %}
+        {% set field = "entry-" ~ product.key ~ "-" ~ i ~ "-" %}
+        <div class="tsi-entry">
+          <div class="tsi-entry__header">
+            <strong>{% if page.layout == "design_blocks" %}{{ product.design_label }} {{ i + 1 }}{% else %}Entry {{ i + 1 }}{% endif %}</strong>
+            {% if product.repeatable and entry_list|length > 1 %}
+              <button type="submit" class="tsi-btn--link" onclick="document.getElementById('page-action').value='remove:{{ product.key }}:{{ i }}'">(x) remove</button>
+            {% endif %}
+          </div>
+          <input type="hidden" name="{{ field }}id" value="{{ entry.id if entry else '' }}">
+
+          {% if page.layout == "count_only" %}
+            <label>Count *</label>
+            <div class="tsi-stepper">
+              <input type="number" name="{{ field }}quantity" min="1" max="500" required
+                     value="{{ entry.quantity if entry and entry.quantity is not none else '' }}">
+            </div>
+            <label>Notes</label>
+            <textarea name="{{ field }}notes" placeholder="Optional">{{ entry.notes if entry else '' }}</textarea>
+
+          {% else %}
+            <label>{{ product.type_label or "Type" }} *</label>
+            {% if product.types %}
+              <select name="{{ field }}type" class="tsi-type-select" data-target="{{ field }}type_other">
+                <option value="">Choose one</option>
+                {% for t in product.types %}
+                  <option value="{{ t }}" {% if entry and entry.type_value == t %}selected{% endif %}>{{ t }}</option>
+                {% endfor %}
+                <option value="Other" {% if entry and entry.type_value == "Other" %}selected{% endif %}>Other</option>
+              </select>
+              <input type="text" name="{{ field }}type_other" placeholder="Describe the type"
+                     value="{{ entry.type_other if entry else '' }}"
+                     style="{% if not entry or entry.type_value != 'Other' %}display:none;{% endif %}">
+            {% else %}
+              <input type="text" name="{{ field }}type_other" value="{{ entry.type_other if entry else '' }}">
+            {% endif %}
+
+            <label>Count *</label>
+            <input type="number" name="{{ field }}count" min="1" max="500" required
+                   value="{{ entry.count if entry and entry.count is not none else '' }}">
+
+            {% if product.hole_select %}
+              <label>Which holes use this design?</label>
+              <div class="tsi-holes">
+                {% for h in range(1, (submission.course_holes or 18) + 1) %}
+                  <label>
+                    <input type="checkbox" name="{{ field }}holes" value="{{ h }}"
+                      {% if entry and h in (entry.holes or []) %}checked{% endif %}> {{ h }}
+                  </label>
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            <label>Description</label>
+            <p class="tsi-help">Size, placement, wording, sponsor details</p>
+            <textarea name="{{ field }}description">{{ entry.description if entry else '' }}</textarea>
+
+            <label>Design File Upload</label>
+            {% if entry and entry.attachments %}
+              <ul class="tsi-file-list">
+                {% for att in entry.attachments %}
+                  <li>
+                    <span>{{ att.original_filename }}</span>
+                    <label><input type="checkbox" name="{{ field }}remove_attachment" value="{{ att.id }}"> remove</label>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+            <div class="tsi-dropzone">
+              <input type="file" name="{{ field }}files" multiple>
+              <div>or drag files here</div>
+            </div>
+
+            <label>Link to files</label>
+            <input type="url" name="{{ field }}link_url" placeholder="https://..." value="{{ entry.link_url if entry else '' }}">
+
+            {% if product.entry_notes_label %}
+              <label>{{ product.entry_notes_label }}</label>
+              <textarea name="{{ field }}notes">{{ entry.notes if entry else '' }}</textarea>
+            {% endif %}
+          {% endif %}
+        </div>
+      {% endfor %}
+
+      <input type="hidden" name="entry_count-{{ product.key }}" value="{{ entry_list|length }}">
+
+      {% if product.repeatable %}
+        <button type="submit" class="tsi-btn tsi-btn--secondary"
+                onclick="document.getElementById('page-action').value='add:{{ product.key }}'">
+          + Add {{ product.design_label if page.layout == "design_blocks" else product.name }}
+        </button>
+      {% endif %}
+
+      {% if product.product_notes_label %}
+        <div class="tsi-notes-box">
+          <label>{{ product.product_notes_label }}</label>
+          {% set note = submission.product_notes | selectattr('product_key', 'equalto', product.key) | first %}
+          <textarea name="product-notes-{{ product.key }}">{{ note.notes if note else '' }}</textarea>
+        </div>
+      {% endif %}
+    </section>
+  {% endfor %}
+
+  {% if page.notes_label %}
+    <div class="tsi-notes-box">
+      <label>{{ page.notes_label }}</label>
+      {% if page.notes_help %}<p class="tsi-help">{{ page.notes_help }}</p>{% endif %}
+      {% set page_note = submission.page_notes | selectattr('page_key', 'equalto', page.key) | first %}
+      <textarea name="page-notes">{{ page_note.notes if page_note else '' }}</textarea>
+    </div>
+  {% endif %}
+
+  <div class="tsi-actions">
+    <button type="submit" class="tsi-btn tsi-btn--secondary" onclick="document.getElementById('page-action').value='back'">Back</button>
+    <button type="submit" class="tsi-btn" onclick="document.getElementById('page-action').value='next'">Next</button>
+  </div>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.addEventListener("change", function (e) {
+    if (e.target.classList.contains("tsi-type-select")) {
+      var input = document.querySelector('[name="' + e.target.dataset.target + '"]');
+      if (input) { input.style.display = (e.target.value === "Other") ? "" : "none"; }
+    }
+  });
+  document.querySelectorAll(".tsi-dropzone").forEach(function (zone) {
+    ["dragover", "dragleave", "drop"].forEach(function (evt) {
+      zone.addEventListener(evt, function (e) {
+        e.preventDefault();
+        zone.classList.toggle("tsi-dropzone--over", evt === "dragover");
+      });
+    });
+    zone.addEventListener("drop", function (e) {
+      var input = zone.querySelector('input[type=file]');
+      if (input && e.dataTransfer.files.length) { input.files = e.dataTransfer.files; }
+    });
+  });
+</script>
+{% endblock %}

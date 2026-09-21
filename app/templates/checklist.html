@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Product Checklist{% endblock %}
+{% block content %}
+<h1>Product Checklist</h1>
+<p class="tsi-help">Tell us what you need. You'll give us the details for each one on the following pages.</p>
+
+<form method="post" id="checklist-form">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <input type="hidden" name="action" id="checklist-action" value="next">
+
+  {% for section, products in sections.items() %}
+    {% set answered = namespace(count=0, yes=0) %}
+    {% for p in products %}
+      {% set sel = submission.get_selection(p.key) %}
+      {% if sel and sel.included is not none %}{% set answered.count = answered.count + 1 %}{% endif %}
+      {% if sel and sel.included %}{% set answered.yes = answered.yes + 1 %}{% endif %}
+    {% endfor %}
+    <details class="tsi-section" {% if scroll_to and scroll_to in products | map(attribute='key') | list %}open{% endif %}>
+      <summary class="tsi-section__header">
+        <span><strong>{{ section }}</strong></span>
+        <span class="tsi-section__progress">{{ answered.count }} of {{ products|length }} answered &middot; {{ answered.yes }} yes</span>
+      </summary>
+      <div class="tsi-section__body">
+        {% for product in products %}
+          {% set sel = submission.get_selection(product.key) %}
+          <div class="tsi-product-row {% if scroll_to == product.key %}tsi-unanswered{% endif %}" data-product-key="{{ product.key }}">
+            <span>{{ product.name }}</span>
+            <span class="tsi-yesno">
+              <label><input type="radio" name="product-{{ product.key }}" value="yes" {% if sel and sel.included == true %}checked{% endif %}> Yes</label>
+              <label><input type="radio" name="product-{{ product.key }}" value="no" {% if sel and sel.included == false %}checked{% endif %}> No</label>
+            </span>
+          </div>
+        {% endfor %}
+        <div class="tsi-actions">
+          <button type="submit" class="tsi-btn tsi-btn--secondary" onclick="document.getElementById('checklist-action').value='mark-no:{{ section }}'">Mark remaining as No</button>
+          <span></span>
+        </div>
+      </div>
+    </details>
+  {% endfor %}
+
+  <div class="tsi-actions">
+    <span></span>
+    <button type="submit" class="tsi-btn" onclick="document.getElementById('checklist-action').value='next'">Next</button>
+  </div>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  var scrollTo = {{ (scroll_to or "") | tojson }};
+  if (scrollTo) {
+    var row = document.querySelector('[data-product-key="' + scrollTo + '"]');
+    if (row) { row.scrollIntoView({behavior: "smooth", block: "center"}); }
+  }
+</script>
+{% endblock %}

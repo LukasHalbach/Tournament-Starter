@@ -1,0 +1,43 @@
+# TSi Tournament Starter Form — catalog and page map.
+#
+# This file drives the entire client-facing form. Add, remove, rename, and
+# reorder products and pages here — no code changes or migrations needed.
+# Run `flask validate-catalog` after editing to catch mistakes before you
+# restart the app.
+#
+# See README.md for a walkthrough of adding a product, moving one to a
+# different page, and adding a whole new page.
+#
+# This file intentionally ships with the framework only — no real products
+# yet. Add yours below.
+
+pages: []
+#  - key: quantities
+#    order: 10
+#    title: Quantities
+#    layout: count_only
+#    intro: "Just tell us how many of each you need."
+#    notes_label: "Anything else about quantities?"
+#
+#  - key: tee_markers
+#    order: 20
+#    title: Tee Markers
+#    layout: design_blocks
+#    notes_label: "Anything else about your tee markers?"
+
+products: []
+#  - key: tee_markers_blocks
+#    section: Course
+#    name: Tee Markers / Blocks
+#    page: tee_markers
+#    design_label: Tee Marker Design
+#    type_label: Tee Marker Type
+#    types:
+#      - Standard
+#      - Championship
+#      - Custom Shape
+#    hole_select: true
+#    repeatable: true
+#    entry_notes_label: "Notes for this design"
+#    product_notes_label: "Notes about your tee markers"
+#    active: true
